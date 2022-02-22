@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:beans="http://www.springframework.org/schema/beans" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	   xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+	<context:component-scan base-package="com.spring.aromit" />
+
+    <mvc:annotation-driven />
+
+    <!--INFO INITIALIZING CRAWL PROPERTY BEANS START -->
+	<beans:bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<beans:property name="locations">
+			<beans:list>
+				<beans:value>classpath:/config/db.properties</beans:value>
+			</beans:list>
+		</beans:property>
+    </beans:bean>
+    <!--INFO INITIALIZING PROPERTY BEANS END -->
+
+    <!--INFO DATA SOURCE PROPERTY BEANS START -->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driverClassName}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />		
+	</bean>
+    <!--INFO DATA SOURCE PROPERTY BEANS END -->
+
+    <!--INFO SESSION FACTORY PROPERTY BEANS START -->
+    
+	<bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+    <!--INFO SESSION FACTORY PROPERTY BEANS END -->
+
+    <!--INFO TRANSACTION MANAGER PROPERTY BEANS START -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" p:dataSource-ref="dataSource" />	   
+    <!--INFO TRANSACTION MANAGER PROPERTY BEANS END -->
+
+    <tx:annotation-driven transaction-manager="transactionManager" />
+</beans>
